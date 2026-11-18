@@ -9,6 +9,7 @@ import {
   X,
 } from "lucide-react";
 
+import logo from "../assets/logo.png";
 import { useAuth } from "../context/AuthContext";
 
 function Sidebar({ open, onClose }) {
@@ -50,41 +51,38 @@ function Sidebar({ open, onClose }) {
     <>
       {open && (
         <div
-          className="fixed inset-0 z-40 bg-black/40 lg:hidden"
+          className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm lg:hidden"
           onClick={onClose}
         />
       )}
 
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex w-64 flex-col bg-slate-950 text-white transition-transform duration-300 lg:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-50 flex w-64 flex-col border-r border-dark-border bg-dark-sidebar text-white transition-transform duration-300 ${
           open ? "translate-x-0" : "-translate-x-full"
-        }`}
+        } lg:translate-x-0`}
       >
-        <div className="flex h-20 items-center justify-between border-b border-slate-800 px-6">
-          <div className="flex items-center gap-3">
-            <div className="rounded-xl bg-blue-600 p-2">
-              <BrainCircuit size={22} />
-            </div>
-
-            <div>
-              <h1 className="text-lg font-bold">ProjectAI</h1>
-              <p className="text-xs text-slate-400">
-                Project Management
-              </p>
-            </div>
+        {/* BRAND LOGO */}
+        <div className="flex h-20 items-center justify-between border-b border-dark-border px-4">
+          <div className="flex min-w-0 flex-1 items-center">
+            <img
+              src={logo}
+              alt="PMS Project Logo"
+              className="h-14 w-full max-w-[190px] object-contain object-left"
+            />
           </div>
 
           <button
             onClick={onClose}
-            className="text-slate-400 hover:text-white lg:hidden"
+            className="ml-2 rounded-lg p-2 text-gray-400 transition hover:bg-dark-elevated hover:text-brand-yellow lg:hidden"
             aria-label="Close sidebar"
           >
             <X size={21} />
           </button>
         </div>
 
+        {/* NAVIGATION */}
         <div className="px-4 py-6">
-          <p className="mb-3 px-3 text-xs font-semibold uppercase tracking-wider text-slate-500">
+          <p className="mb-4 px-3 text-xs font-bold uppercase tracking-[0.18em] text-gray-500">
             Workspace
           </p>
 
@@ -98,27 +96,41 @@ function Sidebar({ open, onClose }) {
                   to={link.path}
                   onClick={onClose}
                   className={({ isActive }) =>
-                    `flex items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium transition ${
+                    `group flex items-center gap-3 rounded-xl border px-3 py-3 text-sm font-medium transition-all duration-200 ${
                       isActive
-                        ? "bg-blue-600 text-white"
-                        : "text-slate-400 hover:bg-slate-800 hover:text-white"
+                        ? "border-brand-yellow/20 bg-brand-yellow text-black shadow-yellow"
+                        : "border-transparent text-gray-400 hover:border-dark-border hover:bg-dark-elevated hover:text-brand-yellow"
                     }`
                   }
                 >
                   <Icon size={19} />
-                  {link.name}
+                  <span>{link.name}</span>
                 </NavLink>
               );
             })}
           </nav>
         </div>
 
-        <div className="mt-auto border-t border-slate-800 p-5">
-          <p className="text-xs text-slate-500">
-            AI-Powered Project Management
-          </p>
-          <p className="mt-1 text-xs text-slate-600">
-            Workspace Dashboard
+        {/* BOTTOM INFO */}
+        <div className="mt-auto border-t border-dark-border p-5">
+          <div className="rounded-xl border border-dark-border bg-dark-card p-4">
+            <div className="mb-2 flex items-center gap-2">
+              <BrainCircuit
+                size={17}
+                className="text-brand-yellow"
+              />
+              <span className="text-xs font-semibold text-white">
+                AI Workspace
+              </span>
+            </div>
+
+            <p className="text-xs leading-5 text-dark-muted">
+              Manage projects, track tasks and discover insights.
+            </p>
+          </div>
+
+          <p className="mt-4 text-center text-[10px] text-gray-600">
+            PMS Project Workspace
           </p>
         </div>
       </aside>

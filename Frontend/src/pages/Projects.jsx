@@ -17,11 +17,11 @@ import projectService from "../services/projectService";
 import { useAuth } from "../context/AuthContext";
 
 const statusStyles = {
-  PLANNING: "bg-blue-100 text-blue-700",
-  ACTIVE: "bg-green-100 text-green-700",
-  ON_HOLD: "bg-yellow-100 text-yellow-700",
-  COMPLETED: "bg-purple-100 text-purple-700",
-  CANCELLED: "bg-red-100 text-red-700",
+  PLANNING: "bg-blue-500/10 text-blue-400 border-blue-500/20",
+  ACTIVE: "bg-green-500/10 text-green-400 border-green-500/20",
+  ON_HOLD: "bg-yellow-500/10 text-yellow-400 border-yellow-500/20",
+  COMPLETED: "bg-purple-500/10 text-purple-400 border-purple-500/20",
+  CANCELLED: "bg-red-500/10 text-red-400 border-red-500/20",
 };
 
 const initialForm = {
@@ -226,14 +226,19 @@ export default function Projects() {
     }
   };
 
+  const activeProjects = projects.filter(
+    (project) => project.status === "ACTIVE"
+  ).length;
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 text-white">
+      {/* Page Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">
+          <h1 className="text-2xl font-bold text-white">
             Projects
           </h1>
-          <p className="mt-1 text-sm text-gray-500">
+          <p className="mt-1 text-sm text-dark-muted">
             Manage and track your projects.
           </p>
         </div>
@@ -242,7 +247,7 @@ export default function Projects() {
           <button
             onClick={fetchProjects}
             disabled={loading}
-            className="inline-flex items-center justify-center gap-2 rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+            className="inline-flex items-center justify-center gap-2 rounded-lg border border-dark-border bg-dark-card px-4 py-2 text-sm font-medium text-gray-300 transition hover:border-brand-yellow hover:text-brand-yellow disabled:opacity-50"
           >
             <RefreshCw
               size={16}
@@ -254,7 +259,7 @@ export default function Projects() {
           {isAdmin && (
             <button
               onClick={openCreateModal}
-              className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+              className="inline-flex items-center justify-center gap-2 rounded-lg bg-brand-yellow px-4 py-2 text-sm font-semibold text-black transition hover:bg-brand-hover"
             >
               <Plus size={18} />
               Create Project
@@ -263,8 +268,9 @@ export default function Projects() {
         </div>
       </div>
 
+      {/* Success Message */}
       {success && (
-        <div className="flex items-center gap-2 rounded-lg border border-green-200 bg-green-50 p-4 text-sm text-green-700">
+        <div className="flex items-center gap-2 rounded-lg border border-green-500/30 bg-green-500/10 p-4 text-sm text-green-400">
           <CheckCircle size={18} />
           {success}
           <button
@@ -277,43 +283,44 @@ export default function Projects() {
         </div>
       )}
 
+      {/* Statistics */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <div className="rounded-xl border border-gray-200 bg-white p-5">
+        <div className="rounded-xl border border-dark-border bg-dark-card p-5 transition hover:border-brand-yellow/40">
           <div className="flex items-center gap-3">
-            <div className="rounded-lg bg-blue-100 p-3 text-blue-600">
+            <div className="rounded-lg bg-brand-yellow/10 p-3 text-brand-yellow">
               <FolderKanban size={22} />
             </div>
             <div>
-              <p className="text-sm text-gray-500">Total Projects</p>
-              <p className="text-2xl font-bold text-gray-900">
+              <p className="text-sm text-dark-muted">Total Projects</p>
+              <p className="text-2xl font-bold text-white">
                 {projects.length}
               </p>
             </div>
           </div>
         </div>
 
-        <div className="rounded-xl border border-gray-200 bg-white p-5">
+        <div className="rounded-xl border border-dark-border bg-dark-card p-5 transition hover:border-brand-yellow/40">
           <div className="flex items-center gap-3">
-            <div className="rounded-lg bg-green-100 p-3 text-green-600">
+            <div className="rounded-lg bg-green-500/10 p-3 text-green-400">
               <FolderKanban size={22} />
             </div>
             <div>
-              <p className="text-sm text-gray-500">Active Projects</p>
-              <p className="text-2xl font-bold text-gray-900">
-                {projects.filter((p) => p.status === "ACTIVE").length}
+              <p className="text-sm text-dark-muted">Active Projects</p>
+              <p className="text-2xl font-bold text-white">
+                {activeProjects}
               </p>
             </div>
           </div>
         </div>
 
-        <div className="rounded-xl border border-gray-200 bg-white p-5">
+        <div className="rounded-xl border border-dark-border bg-dark-card p-5 transition hover:border-brand-yellow/40">
           <div className="flex items-center gap-3">
-            <div className="rounded-lg bg-purple-100 p-3 text-purple-600">
+            <div className="rounded-lg bg-purple-500/10 p-3 text-purple-400">
               <Users size={22} />
             </div>
             <div>
-              <p className="text-sm text-gray-500">Your Role</p>
-              <p className="text-lg font-bold text-gray-900">
+              <p className="text-sm text-dark-muted">Your Role</p>
+              <p className="text-lg font-bold text-white">
                 {isAdmin ? "Administrator" : "Team Member"}
               </p>
             </div>
@@ -321,25 +328,26 @@ export default function Projects() {
         </div>
       </div>
 
+      {/* Search and Filter */}
       <div className="flex flex-col gap-3 sm:flex-row">
         <div className="relative flex-1">
           <Search
             size={18}
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-dark-muted"
           />
           <input
             type="text"
             placeholder="Search projects..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full rounded-lg border border-gray-300 py-2.5 pl-10 pr-4 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+            className="w-full rounded-lg border border-dark-border bg-dark-card py-2.5 pl-10 pr-4 text-white placeholder-gray-500 outline-none transition focus:border-brand-yellow focus:ring-2 focus:ring-brand-yellow/10"
           />
         </div>
 
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className="rounded-lg border border-gray-300 px-4 py-2.5 outline-none focus:border-blue-500"
+          className="rounded-lg border border-dark-border bg-dark-card px-4 py-2.5 text-white outline-none focus:border-brand-yellow"
         >
           <option value="ALL">All Statuses</option>
           <option value="PLANNING">Planning</option>
@@ -350,8 +358,9 @@ export default function Projects() {
         </select>
       </div>
 
+      {/* Error Message */}
       {error && (
-        <div className="flex items-center gap-3 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+        <div className="flex items-center gap-3 rounded-lg border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-400">
           <AlertCircle size={20} />
           <span>{error}</span>
           <button
@@ -363,20 +372,21 @@ export default function Projects() {
         </div>
       )}
 
+      {/* Project List */}
       {loading ? (
-        <div className="rounded-xl border border-gray-200 bg-white p-12 text-center text-gray-500">
+        <div className="rounded-xl border border-dark-border bg-dark-card p-12 text-center text-dark-muted">
           Loading projects...
         </div>
       ) : filteredProjects.length === 0 ? (
-        <div className="rounded-xl border border-gray-200 bg-white p-12 text-center">
+        <div className="rounded-xl border border-dark-border bg-dark-card p-12 text-center">
           <FolderKanban
             size={40}
-            className="mx-auto mb-3 text-gray-300"
+            className="mx-auto mb-3 text-dark-muted"
           />
-          <h3 className="font-semibold text-gray-800">
+          <h3 className="font-semibold text-white">
             No projects found
           </h3>
-          <p className="mt-1 text-sm text-gray-500">
+          <p className="mt-1 text-sm text-dark-muted">
             Try changing your search or status filter.
           </p>
         </div>
@@ -385,59 +395,59 @@ export default function Projects() {
           {filteredProjects.map((project) => (
             <div
               key={project.id}
-              className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition hover:shadow-md"
+              className="rounded-xl border border-dark-border bg-dark-card p-5 shadow-sm transition duration-200 hover:border-brand-yellow/50 hover:shadow-yellow"
             >
               <div className="flex items-start justify-between gap-3">
-                <div>
-                  <h3 className="font-semibold text-gray-900">
+                <div className="min-w-0">
+                  <h3 className="font-semibold text-white">
                     {project.name}
                   </h3>
-                  <p className="mt-2 text-sm text-gray-500">
+                  <p className="mt-2 text-sm leading-6 text-dark-muted">
                     {project.description || "No description provided."}
                   </p>
                 </div>
 
                 <span
-                  className={`shrink-0 rounded-full px-3 py-1 text-xs font-semibold ${
+                  className={`shrink-0 rounded-full border px-3 py-1 text-xs font-semibold ${
                     statusStyles[project.status] ||
-                    "bg-gray-100 text-gray-700"
+                    "border-dark-border bg-dark-elevated text-gray-300"
                   }`}
                 >
                   {project.status?.replace("_", " ")}
                 </span>
               </div>
 
-              <div className="mt-5 grid grid-cols-2 gap-4 border-t border-gray-100 pt-4">
-                <div className="flex items-center gap-2 text-sm text-gray-500">
-                  <CalendarDays size={16} />
+              <div className="mt-5 grid grid-cols-2 gap-4 border-t border-dark-border pt-4">
+                <div className="flex items-center gap-2 text-sm text-dark-muted">
+                  <CalendarDays size={16} className="text-brand-yellow" />
                   <div>
-                    <p className="text-xs text-gray-400">Start Date</p>
-                    <p className="font-medium text-gray-700">
+                    <p className="text-xs text-dark-muted">Start Date</p>
+                    <p className="font-medium text-gray-200">
                       {formatDate(project.start_date)}
                     </p>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2 text-sm text-gray-500">
-                  <CalendarDays size={16} />
+                <div className="flex items-center gap-2 text-sm text-dark-muted">
+                  <CalendarDays size={16} className="text-brand-yellow" />
                   <div>
-                    <p className="text-xs text-gray-400">Deadline</p>
-                    <p className="font-medium text-gray-700">
+                    <p className="text-xs text-dark-muted">Deadline</p>
+                    <p className="font-medium text-gray-200">
                       {formatDate(project.deadline)}
                     </p>
                   </div>
                 </div>
               </div>
 
-              <div className="mt-4 flex items-center justify-between border-t border-gray-100 pt-4">
-                <div className="flex items-center gap-2 text-sm text-gray-500">
-                  <Users size={16} />
+              <div className="mt-4 flex items-center justify-between border-t border-dark-border pt-4">
+                <div className="flex items-center gap-2 text-sm text-dark-muted">
+                  <Users size={16} className="text-brand-yellow" />
                   {project.members?.length || 0} members
                 </div>
 
                 <Link
                   to={`/projects/${project.id}`}
-                  className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+                  className="rounded-lg bg-brand-yellow px-4 py-2 text-sm font-semibold text-black transition hover:bg-brand-hover"
                 >
                   View Details
                 </Link>
@@ -447,15 +457,16 @@ export default function Projects() {
         </div>
       )}
 
+      {/* Create Project Modal */}
       {showCreateModal && isAdmin && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-xl bg-white shadow-xl">
-            <div className="sticky top-0 flex items-center justify-between border-b border-gray-200 bg-white p-5">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm">
+          <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-xl border border-dark-border bg-dark-card shadow-2xl">
+            <div className="sticky top-0 flex items-center justify-between border-b border-dark-border bg-dark-card p-5">
               <div>
-                <h2 className="text-xl font-bold text-gray-900">
+                <h2 className="text-xl font-bold text-white">
                   Create Project
                 </h2>
-                <p className="mt-1 text-sm text-gray-500">
+                <p className="mt-1 text-sm text-dark-muted">
                   Enter project details and assign team members.
                 </p>
               </div>
@@ -463,7 +474,7 @@ export default function Projects() {
               <button
                 onClick={closeCreateModal}
                 disabled={submitting}
-                className="rounded-lg p-2 text-gray-500 hover:bg-gray-100 disabled:opacity-50"
+                className="rounded-lg p-2 text-dark-muted transition hover:bg-dark-elevated hover:text-white disabled:opacity-50"
                 aria-label="Close modal"
               >
                 <X size={20} />
@@ -472,13 +483,13 @@ export default function Projects() {
 
             <form onSubmit={handleCreateProject} className="space-y-5 p-5">
               {formError && (
-                <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+                <div className="rounded-lg border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-400">
                   {formError}
                 </div>
               )}
 
               <div>
-                <label className="mb-1 block text-sm font-medium text-gray-700">
+                <label className="mb-1 block text-sm font-medium text-gray-300">
                   Project Name *
                 </label>
                 <input
@@ -488,12 +499,12 @@ export default function Projects() {
                   required
                   maxLength={255}
                   placeholder="Enter project name"
-                  className="w-full rounded-lg border border-gray-300 px-3 py-2.5 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                  className="w-full rounded-lg border border-dark-border bg-dark-elevated px-3 py-2.5 text-white placeholder-gray-500 outline-none focus:border-brand-yellow focus:ring-2 focus:ring-brand-yellow/10"
                 />
               </div>
 
               <div>
-                <label className="mb-1 block text-sm font-medium text-gray-700">
+                <label className="mb-1 block text-sm font-medium text-gray-300">
                   Description
                 </label>
                 <textarea
@@ -502,13 +513,13 @@ export default function Projects() {
                   onChange={handleFormChange}
                   rows={3}
                   placeholder="Describe the project..."
-                  className="w-full rounded-lg border border-gray-300 px-3 py-2.5 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                  className="w-full rounded-lg border border-dark-border bg-dark-elevated px-3 py-2.5 text-white placeholder-gray-500 outline-none focus:border-brand-yellow focus:ring-2 focus:ring-brand-yellow/10"
                 />
               </div>
 
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div>
-                  <label className="mb-1 block text-sm font-medium text-gray-700">
+                  <label className="mb-1 block text-sm font-medium text-gray-300">
                     Start Date *
                   </label>
                   <input
@@ -517,12 +528,12 @@ export default function Projects() {
                     value={form.start_date}
                     onChange={handleFormChange}
                     required
-                    className="w-full rounded-lg border border-gray-300 px-3 py-2.5 outline-none focus:border-blue-500"
+                    className="w-full rounded-lg border border-dark-border bg-dark-elevated px-3 py-2.5 text-white outline-none focus:border-brand-yellow"
                   />
                 </div>
 
                 <div>
-                  <label className="mb-1 block text-sm font-medium text-gray-700">
+                  <label className="mb-1 block text-sm font-medium text-gray-300">
                     Deadline *
                   </label>
                   <input
@@ -532,20 +543,20 @@ export default function Projects() {
                     min={form.start_date || undefined}
                     onChange={handleFormChange}
                     required
-                    className="w-full rounded-lg border border-gray-300 px-3 py-2.5 outline-none focus:border-blue-500"
+                    className="w-full rounded-lg border border-dark-border bg-dark-elevated px-3 py-2.5 text-white outline-none focus:border-brand-yellow"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="mb-1 block text-sm font-medium text-gray-700">
+                <label className="mb-1 block text-sm font-medium text-gray-300">
                   Project Status
                 </label>
                 <select
                   name="status"
                   value={form.status}
                   onChange={handleFormChange}
-                  className="w-full rounded-lg border border-gray-300 px-3 py-2.5 outline-none focus:border-blue-500"
+                  className="w-full rounded-lg border border-dark-border bg-dark-elevated px-3 py-2.5 text-white outline-none focus:border-brand-yellow"
                 >
                   <option value="PLANNING">Planning</option>
                   <option value="ACTIVE">Active</option>
@@ -556,37 +567,37 @@ export default function Projects() {
               </div>
 
               <div>
-                <label className="mb-2 block text-sm font-medium text-gray-700">
+                <label className="mb-2 block text-sm font-medium text-gray-300">
                   Assign Team Members
                 </label>
 
-                <div className="max-h-48 space-y-2 overflow-y-auto rounded-lg border border-gray-200 p-3">
+                <div className="max-h-48 space-y-2 overflow-y-auto rounded-lg border border-dark-border bg-dark-elevated p-3">
                   {usersLoading ? (
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-dark-muted">
                       Loading team members...
                     </p>
                   ) : users.length === 0 ? (
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-dark-muted">
                       No active team members found.
                     </p>
                   ) : (
                     users.map((user) => (
                       <label
                         key={user.id}
-                        className="flex cursor-pointer items-center gap-3 rounded-lg p-2 hover:bg-gray-50"
+                        className="flex cursor-pointer items-center gap-3 rounded-lg p-2 transition hover:bg-dark-card"
                       >
                         <input
                           type="checkbox"
                           checked={form.member_ids.includes(user.id)}
                           onChange={() => handleMemberToggle(user.id)}
-                          className="h-4 w-4 rounded border-gray-300 text-blue-600"
+                          className="h-4 w-4 rounded border-dark-border bg-dark-card accent-yellow-400"
                         />
 
                         <div>
-                          <p className="text-sm font-medium text-gray-800">
+                          <p className="text-sm font-medium text-white">
                             {user.name}
                           </p>
-                          <p className="text-xs text-gray-500">
+                          <p className="text-xs text-dark-muted">
                             {user.email}
                           </p>
                         </div>
@@ -595,17 +606,17 @@ export default function Projects() {
                   )}
                 </div>
 
-                <p className="mt-2 text-xs text-gray-500">
+                <p className="mt-2 text-xs text-dark-muted">
                   Selected members: {form.member_ids.length}
                 </p>
               </div>
 
-              <div className="flex flex-col-reverse gap-3 border-t border-gray-100 pt-4 sm:flex-row sm:justify-end">
+              <div className="flex flex-col-reverse gap-3 border-t border-dark-border pt-4 sm:flex-row sm:justify-end">
                 <button
                   type="button"
                   onClick={closeCreateModal}
                   disabled={submitting}
-                  className="rounded-lg border border-gray-300 px-5 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                  className="rounded-lg border border-dark-border bg-dark-elevated px-5 py-2.5 text-sm font-medium text-gray-300 transition hover:border-brand-yellow hover:text-brand-yellow"
                 >
                   Cancel
                 </button>
@@ -613,7 +624,7 @@ export default function Projects() {
                 <button
                   type="submit"
                   disabled={submitting || usersLoading}
-                  className="rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+                  className="rounded-lg bg-brand-yellow px-5 py-2.5 text-sm font-semibold text-black transition hover:bg-brand-hover disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   {submitting ? "Creating..." : "Create Project"}
                 </button>

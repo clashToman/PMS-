@@ -1,5 +1,20 @@
 
 import { useEffect, useMemo, useState } from "react";
+import {
+  Users,
+  UserPlus,
+  Search,
+  RefreshCw,
+  Edit,
+  ShieldCheck,
+  UserCheck,
+  UserX,
+  X,
+  AlertCircle,
+  CheckCircle,
+  UsersRound,
+} from "lucide-react";
+
 import userService from "../services/userService";
 import { useAuth } from "../context/AuthContext";
 
@@ -9,6 +24,12 @@ const emptyForm = {
   password: "",
   role: "TEAM_MEMBER",
 };
+
+const inputClass =
+  "w-full rounded-lg border border-dark-border bg-dark-elevated px-3 py-2.5 text-white placeholder-gray-500 outline-none transition focus:border-brand-yellow focus:ring-2 focus:ring-brand-yellow/10";
+
+const labelClass =
+  "mb-1 block text-sm font-medium text-gray-300";
 
 function getErrorMessage(error) {
   const detail = error.response?.data?.detail;
@@ -23,7 +44,11 @@ function getErrorMessage(error) {
 function formatDate(value) {
   if (!value) return "—";
 
-  return new Date(value).toLocaleDateString();
+  return new Date(value).toLocaleDateString("en-IN", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
 }
 
 export default function Team() {
@@ -148,7 +173,6 @@ export default function Team() {
 
   async function handleStatusChange(user) {
     const nextStatus = !user.is_active;
-
     const action = nextStatus ? "activate" : "deactivate";
 
     const confirmed = window.confirm(
@@ -214,11 +238,17 @@ export default function Team() {
 
   if (!isAdmin) {
     return (
-      <div className="rounded-xl border bg-white p-8 text-center">
-        <h2 className="text-lg font-semibold text-gray-800">
+      <div className="rounded-xl border border-dark-border bg-dark-card p-8 text-center">
+        <ShieldCheck
+          size={42}
+          className="mx-auto mb-3 text-brand-yellow"
+        />
+
+        <h2 className="text-lg font-semibold text-white">
           Admin access required
         </h2>
-        <p className="mt-2 text-sm text-gray-500">
+
+        <p className="mt-2 text-sm text-dark-muted">
           You do not have permission to manage team members.
         </p>
       </div>
@@ -226,87 +256,153 @@ export default function Team() {
   }
 
   return (
-    <div className="space-y-6 p-4 md:p-6">
-      {/* Page heading */}
+    <div className="space-y-6 p-4 text-white md:p-6">
+
+      {/* Page Header */}
       <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
         <div>
-          <h1 className="text-2xl font-bold text-gray-800">
+          <h1 className="text-2xl font-bold text-white">
             Team Management
           </h1>
-          <p className="mt-1 text-sm text-gray-500">
+
+          <p className="mt-1 text-sm text-dark-muted">
             Manage team members, roles and account access.
           </p>
         </div>
 
         <button
           onClick={openCreateForm}
-          className="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+          className="inline-flex items-center justify-center gap-2 rounded-lg bg-brand-yellow px-4 py-2.5 font-semibold text-black transition hover:bg-brand-hover"
         >
-          + Add Team Member
+          <UserPlus size={18} />
+          Add Team Member
         </button>
       </div>
 
       {/* Notifications */}
       {error && (
-        <div className="rounded-lg bg-red-50 p-3 text-sm text-red-700">
-          {error}
+        <div className="flex items-center gap-2 rounded-lg border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-400">
+          <AlertCircle size={18} />
+          <span>{error}</span>
+          <button
+            onClick={() => setError("")}
+            className="ml-auto"
+            aria-label="Dismiss error"
+          >
+            <X size={16} />
+          </button>
         </div>
       )}
 
       {success && (
-        <div className="rounded-lg bg-green-50 p-3 text-sm text-green-700">
-          {success}
+        <div className="flex items-center gap-2 rounded-lg border border-green-500/30 bg-green-500/10 p-3 text-sm text-green-400">
+          <CheckCircle size={18} />
+          <span>{success}</span>
+          <button
+            onClick={() => setSuccess("")}
+            className="ml-auto"
+            aria-label="Dismiss success"
+          >
+            <X size={16} />
+          </button>
         </div>
       )}
 
-      {/* Summary cards */}
+      {/* Summary Cards */}
       <div className="grid gap-4 sm:grid-cols-3">
-        <div className="rounded-xl border bg-white p-5 shadow-sm">
-          <p className="text-sm text-gray-500">Total Members</p>
-          <p className="mt-2 text-2xl font-bold text-gray-800">
+        <div className="rounded-xl border border-dark-border bg-dark-card p-5 transition hover:border-brand-yellow/40">
+          <div className="flex items-center justify-between">
+            <p className="text-sm text-dark-muted">
+              Total Members
+            </p>
+
+            <div className="rounded-lg bg-brand-yellow/10 p-2 text-brand-yellow">
+              <Users size={20} />
+            </div>
+          </div>
+
+          <p className="mt-3 text-3xl font-bold text-white">
             {users.length}
           </p>
-        </div>
 
-        <div className="rounded-xl border bg-white p-5 shadow-sm">
-          <p className="text-sm text-gray-500">Active Members</p>
-          <p className="mt-2 text-2xl font-bold text-green-600">
-            {activeCount}
+          <p className="mt-1 text-xs text-dark-muted">
+            Registered team accounts
           </p>
         </div>
 
-        <div className="rounded-xl border bg-white p-5 shadow-sm">
-          <p className="text-sm text-gray-500">Inactive Members</p>
-          <p className="mt-2 text-2xl font-bold text-red-600">
+        <div className="rounded-xl border border-dark-border bg-dark-card p-5 transition hover:border-green-500/40">
+          <div className="flex items-center justify-between">
+            <p className="text-sm text-dark-muted">
+              Active Members
+            </p>
+
+            <div className="rounded-lg bg-green-500/10 p-2 text-green-400">
+              <UserCheck size={20} />
+            </div>
+          </div>
+
+          <p className="mt-3 text-3xl font-bold text-green-400">
+            {activeCount}
+          </p>
+
+          <p className="mt-1 text-xs text-dark-muted">
+            Currently active accounts
+          </p>
+        </div>
+
+        <div className="rounded-xl border border-dark-border bg-dark-card p-5 transition hover:border-red-500/40">
+          <div className="flex items-center justify-between">
+            <p className="text-sm text-dark-muted">
+              Inactive Members
+            </p>
+
+            <div className="rounded-lg bg-red-500/10 p-2 text-red-400">
+              <UserX size={20} />
+            </div>
+          </div>
+
+          <p className="mt-3 text-3xl font-bold text-red-400">
             {inactiveCount}
+          </p>
+
+          <p className="mt-1 text-xs text-dark-muted">
+            Deactivated accounts
           </p>
         </div>
       </div>
 
-      {/* Create/Edit form */}
+      {/* Create / Edit Form */}
       {showForm && (
         <form
           onSubmit={handleSubmit}
-          className="space-y-4 rounded-xl border bg-white p-5 shadow-sm"
+          className="space-y-4 rounded-xl border border-dark-border bg-dark-card p-5"
         >
-          <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-gray-800">
-              {editingUser ? "Edit Team Member" : "Add Team Member"}
-            </h2>
+          <div className="flex items-center justify-between border-b border-dark-border pb-4">
+            <div className="flex items-center gap-2">
+              <div className="rounded-lg bg-brand-yellow/10 p-2 text-brand-yellow">
+                <UserPlus size={20} />
+              </div>
+
+              <h2 className="text-lg font-semibold text-white">
+                {editingUser ? "Edit Team Member" : "Add Team Member"}
+              </h2>
+            </div>
 
             <button
               type="button"
               onClick={closeForm}
-              className="text-sm text-gray-500 hover:text-gray-800"
+              className="rounded-lg p-2 text-dark-muted transition hover:bg-dark-elevated hover:text-white"
+              aria-label="Close form"
             >
-              Close
+              <X size={20} />
             </button>
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
+            <label className={labelClass}>
               Full Name
             </label>
+
             <input
               required
               value={form.name}
@@ -314,14 +410,15 @@ export default function Team() {
                 setForm({ ...form, name: event.target.value })
               }
               placeholder="Enter full name"
-              className="w-full rounded-lg border px-3 py-2"
+              className={inputClass}
             />
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
+            <label className={labelClass}>
               Email
             </label>
+
             <input
               required
               type="email"
@@ -330,15 +427,16 @@ export default function Team() {
                 setForm({ ...form, email: event.target.value })
               }
               placeholder="Enter email address"
-              className="w-full rounded-lg border px-3 py-2"
+              className={inputClass}
             />
           </div>
 
           {!editingUser && (
             <div>
-              <label className="mb-1 block text-sm font-medium text-gray-700">
+              <label className={labelClass}>
                 Password
               </label>
+
               <input
                 required
                 type="password"
@@ -348,22 +446,23 @@ export default function Team() {
                   setForm({ ...form, password: event.target.value })
                 }
                 placeholder="Enter initial password"
-                className="w-full rounded-lg border px-3 py-2"
+                className={inputClass}
               />
             </div>
           )}
 
           {editingUser && (
             <div>
-              <label className="mb-1 block text-sm font-medium text-gray-700">
+              <label className={labelClass}>
                 Role
               </label>
+
               <select
                 value={form.role}
                 onChange={(event) =>
                   setForm({ ...form, role: event.target.value })
                 }
-                className="w-full rounded-lg border px-3 py-2"
+                className={inputClass}
               >
                 <option value="TEAM_MEMBER">Team Member</option>
                 <option value="ADMIN">Admin</option>
@@ -371,11 +470,11 @@ export default function Team() {
             </div>
           )}
 
-          <div className="flex gap-3">
+          <div className="flex flex-col gap-3 border-t border-dark-border pt-4 sm:flex-row">
             <button
               type="submit"
               disabled={saving}
-              className="rounded-lg bg-blue-600 px-5 py-2 text-white hover:bg-blue-700 disabled:opacity-50"
+              className="rounded-lg bg-brand-yellow px-5 py-2.5 font-semibold text-black transition hover:bg-brand-hover disabled:opacity-50"
             >
               {saving
                 ? "Saving..."
@@ -387,7 +486,8 @@ export default function Team() {
             <button
               type="button"
               onClick={closeForm}
-              className="rounded-lg border px-5 py-2 text-gray-700 hover:bg-gray-50"
+              disabled={saving}
+              className="rounded-lg border border-dark-border bg-dark-elevated px-5 py-2.5 text-gray-300 transition hover:border-brand-yellow hover:text-brand-yellow"
             >
               Cancel
             </button>
@@ -395,19 +495,26 @@ export default function Team() {
         </form>
       )}
 
-      {/* Search and filters */}
-      <div className="grid gap-3 rounded-xl border bg-white p-4 shadow-sm md:grid-cols-3">
-        <input
-          value={search}
-          onChange={(event) => setSearch(event.target.value)}
-          placeholder="Search by name or email..."
-          className="rounded-lg border px-3 py-2"
-        />
+      {/* Search and Filters */}
+      <div className="grid gap-3 rounded-xl border border-dark-border bg-dark-card p-4 md:grid-cols-3">
+        <div className="relative">
+          <Search
+            size={18}
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-dark-muted"
+          />
+
+          <input
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+            placeholder="Search by name or email..."
+            className={`${inputClass} pl-10`}
+          />
+        </div>
 
         <select
           value={roleFilter}
           onChange={(event) => setRoleFilter(event.target.value)}
-          className="rounded-lg border px-3 py-2"
+          className={inputClass}
         >
           <option value="ALL">All Roles</option>
           <option value="ADMIN">Admin</option>
@@ -417,7 +524,7 @@ export default function Team() {
         <select
           value={statusFilter}
           onChange={(event) => setStatusFilter(event.target.value)}
-          className="rounded-lg border px-3 py-2"
+          className={inputClass}
         >
           <option value="ALL">All Accounts</option>
           <option value="ACTIVE">Active</option>
@@ -425,74 +532,136 @@ export default function Team() {
         </select>
       </div>
 
-      {/* Team table */}
-      <div className="overflow-hidden rounded-xl border bg-white shadow-sm">
-        <div className="flex items-center justify-between border-b p-4">
-          <h2 className="font-semibold text-gray-800">
-            Team Members ({filteredUsers.length})
-          </h2>
+      {/* Team Members Table */}
+      <div className="overflow-hidden rounded-xl border border-dark-border bg-dark-card">
+        <div className="flex flex-col justify-between gap-3 border-b border-dark-border p-4 sm:flex-row sm:items-center">
+          <div>
+            <div className="flex items-center gap-2">
+              <UsersRound
+                size={20}
+                className="text-brand-yellow"
+              />
+
+              <h2 className="font-semibold text-white">
+                Team Members ({filteredUsers.length})
+              </h2>
+            </div>
+
+            <p className="mt-1 text-xs text-dark-muted">
+              View and manage registered team accounts.
+            </p>
+          </div>
 
           <button
             onClick={loadUsers}
-            className="text-sm text-blue-600 hover:underline"
+            disabled={loading}
+            className="inline-flex items-center justify-center gap-2 rounded-lg border border-dark-border bg-dark-elevated px-3 py-2 text-sm text-gray-300 transition hover:border-brand-yellow hover:text-brand-yellow disabled:opacity-50"
           >
+            <RefreshCw
+              size={15}
+              className={loading ? "animate-spin" : ""}
+            />
             Refresh
           </button>
         </div>
 
         {loading ? (
-          <div className="p-8 text-center text-gray-500">
+          <div className="p-10 text-center text-dark-muted">
             Loading team members...
           </div>
         ) : filteredUsers.length === 0 ? (
-          <div className="p-8 text-center text-gray-500">
-            No team members found.
+          <div className="p-10 text-center">
+            <Users
+              size={36}
+              className="mx-auto mb-3 text-dark-muted"
+            />
+
+            <p className="font-medium text-white">
+              No team members found
+            </p>
+
+            <p className="mt-1 text-sm text-dark-muted">
+              Try changing your search or filters.
+            </p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full min-w-[750px] text-left text-sm">
-              <thead className="bg-gray-50 text-gray-600">
+              <thead className="bg-dark-elevated text-dark-muted">
                 <tr>
-                  <th className="px-5 py-3 font-medium">Member</th>
-                  <th className="px-5 py-3 font-medium">Role</th>
-                  <th className="px-5 py-3 font-medium">Status</th>
-                  <th className="px-5 py-3 font-medium">Joined</th>
-                  <th className="px-5 py-3 font-medium">Actions</th>
+                  <th className="px-5 py-4 font-medium">
+                    Member
+                  </th>
+
+                  <th className="px-5 py-4 font-medium">
+                    Role
+                  </th>
+
+                  <th className="px-5 py-4 font-medium">
+                    Status
+                  </th>
+
+                  <th className="px-5 py-4 font-medium">
+                    Joined
+                  </th>
+
+                  <th className="px-5 py-4 font-medium">
+                    Actions
+                  </th>
                 </tr>
               </thead>
 
-              <tbody className="divide-y">
+              <tbody className="divide-y divide-dark-border">
                 {filteredUsers.map((user) => (
-                  <tr key={user.id} className="hover:bg-gray-50">
+                  <tr
+                    key={user.id}
+                    className="transition hover:bg-dark-elevated/60"
+                  >
                     <td className="px-5 py-4">
-                      <p className="font-medium text-gray-800">
-                        {user.name}
-                      </p>
-                      <p className="text-xs text-gray-500">
-                        {user.email}
-                      </p>
-                      
-                    </td>
+                      <div className="flex items-center gap-3">
+                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-yellow/10 font-semibold text-brand-yellow">
+                          {(user.name || "?")
+                            .charAt(0)
+                            .toUpperCase()}
+                        </div>
 
-                    <td className="px-5 py-4">
-                      <span className="rounded-full bg-blue-50 px-3 py-1 text-xs font-medium text-blue-700">
-                        {user.role?.replace("_", " ")}
-                      </span>
+                        <div>
+                          <p className="font-medium text-white">
+                            {user.name}
+                          </p>
+
+                          <p className="mt-1 text-xs text-dark-muted">
+                            {user.email}
+                          </p>
+                        </div>
+                      </div>
                     </td>
 
                     <td className="px-5 py-4">
                       <span
-                        className={`rounded-full px-3 py-1 text-xs font-medium ${
+  className={`inline-flex whitespace-nowrap rounded-full border px-3 py-1 text-xs font-medium ${
+    user.role === "ADMIN"
+      ? "border-brand-yellow/20 bg-brand-yellow/10 text-brand-yellow"
+      : "border-blue-500/20 bg-blue-500/10 text-blue-400"
+  }`}
+>
+  {user.role?.replace("_", " ")}
+</span>
+                    </td>
+
+                    <td className="px-5 py-4">
+                      <span
+                        className={`rounded-full border px-3 py-1 text-xs font-medium ${
                           user.is_active
-                            ? "bg-green-100 text-green-700"
-                            : "bg-red-100 text-red-700"
+                            ? "border-green-500/20 bg-green-500/10 text-green-400"
+                            : "border-red-500/20 bg-red-500/10 text-red-400"
                         }`}
                       >
                         {user.is_active ? "Active" : "Inactive"}
                       </span>
                     </td>
 
-                    <td className="px-5 py-4 text-gray-500">
+                    <td className="px-5 py-4 text-dark-muted">
                       {formatDate(user.created_at)}
                     </td>
 
@@ -500,18 +669,19 @@ export default function Team() {
                       <div className="flex items-center gap-3">
                         <button
                           onClick={() => openEditForm(user)}
-                          className="font-medium text-blue-600 hover:underline"
+                          className="inline-flex items-center gap-1 font-medium text-brand-yellow transition hover:text-brand-hover"
                         >
+                          <Edit size={14} />
                           Edit
                         </button>
 
                         <button
                           onClick={() => handleStatusChange(user)}
                           disabled={changingStatusId === user.id}
-                          className={`font-medium hover:underline disabled:opacity-50 ${
+                          className={`font-medium transition hover:underline disabled:opacity-50 ${
                             user.is_active
-                              ? "text-red-600"
-                              : "text-green-600"
+                              ? "text-red-400 hover:text-red-300"
+                              : "text-green-400 hover:text-green-300"
                           }`}
                         >
                           {changingStatusId === user.id

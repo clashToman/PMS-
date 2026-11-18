@@ -9,7 +9,7 @@ function AppLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-dark-main text-white">
       <Sidebar
         open={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
@@ -20,7 +20,7 @@ function AppLayout() {
           onMenuClick={() => setSidebarOpen(true)}
         />
 
-        <main className="p-4 sm:p-6 lg:p-8">
+        <main className="min-h-[calc(100vh-5rem)] bg-dark-main p-4 sm:p-6 lg:p-8">
           <Outlet />
         </main>
       </div>

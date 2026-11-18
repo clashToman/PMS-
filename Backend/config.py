@@ -14,7 +14,7 @@ class Settings(BaseSettings):
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
 
-    FRONTEND_URL: str = "http://localhost:5173"
+    FRONTEND_URL: str = "https://pms-frontend-wx2l.onrender.com"
 
     ADMIN_NAME: str = "System Admin"
     ADMIN_EMAIL: str
