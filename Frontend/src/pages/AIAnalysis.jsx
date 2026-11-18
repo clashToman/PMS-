@@ -176,7 +176,7 @@ function AIAnalysis() {
 
           <div>
             <label className="mb-2 block text-sm font-medium text-gray-300">
-              Ask a Question (Optional)
+              Ask a Question
             </label>
 
             <textarea
