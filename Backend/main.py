@@ -1,3 +1,4 @@
+
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
@@ -32,7 +33,9 @@ async def lifespan(app: FastAPI):
     db = SessionLocal()
 
     try:
-        admin = db.query(User).filter(User.email == settings.ADMIN_EMAIL).first()
+        admin = db.query(User).filter(
+            User.email == settings.ADMIN_EMAIL
+        ).first()
 
         if admin is None:
             admin = User(
@@ -65,9 +68,13 @@ app = FastAPI(
 )
 
 
+# CORS configuration
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[settings.FRONTEND_URL],
+    allow_origins=[
+        "http://localhost:5173",
+        "https://pms-frontend-wx2l.onrender.com",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -85,9 +92,11 @@ app.include_router(ai_router)
 
 @app.get("/")
 def root():
-    return {"message": "AI-Powered Project Management System API is running"}
+    return {
+        "message": "AI-Powered Project Management System API is running"
+    }
 
 
-@app.get("/")
+@app.get("/health")
 def health_check():
     return {"status": "healthy"}
