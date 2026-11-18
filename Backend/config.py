@@ -9,12 +9,18 @@ class Settings(BaseSettings):
     APP_NAME: str = "PMS API"
 
     DATABASE_URL: str
- 
-    SECRET_KEY: str 
-    ALGORITHM: str = "HS256"
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
 
+    SECRET_KEY: str
+    ALGORITHM: str = "HS256"
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
+
+    # Frontend URLs: local development and Render deployment
     FRONTEND_URL: str = "https://pms-frontend-wx2l.onrender.com"
+    FRONTEND_URLS: str = (
+        "http://localhost:5173,"
+        "http://127.0.0.1:5173,"
+        "https://pms-frontend-wx2l.onrender.com"
+    )
 
     ADMIN_NAME: str = "System Admin"
     ADMIN_EMAIL: str

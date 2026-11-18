@@ -68,18 +68,17 @@ app = FastAPI(
 )
 
 
-# CORS configuration
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:5173",
-        "https://pms-frontend-wx2l.onrender.com",
+        url.strip()
+        for url in settings.FRONTEND_URLS.split(",")
+        if url.strip()
     ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
 
 # Register API routers
 app.include_router(auth_router)
