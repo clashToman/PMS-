@@ -212,7 +212,7 @@ function Login() {
               Secure access to your project workspace
             </p>
             <p className="mt-2 text-center text-xs font-medium text-gray-600">
-              Powered by ProjectAI
+              Powered by Praveen
             </p>
           </div>
         </div>
